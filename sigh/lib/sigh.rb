@@ -17,4 +17,10 @@ module Sigh
 
   ENV['FASTLANE_TEAM_ID'] ||= ENV["SIGH_TEAM_ID"]
   ENV['DELIVER_USER'] ||= ENV["SIGH_USERNAME"]
+
+  FastlaneCore::FeatureManager.addFeatures([
+    Feature.new(key: :mykey,
+      description: "yo",
+      env_var: 'FASTLANE_SIGH_MYFEATURE')
+    ])
 end

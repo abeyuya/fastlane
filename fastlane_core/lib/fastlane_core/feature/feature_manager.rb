@@ -12,33 +12,34 @@ module FastlaneCore
     def self.enabled?(key)
       feature = features.detect { |feat| feat.key == key }
       return false if feature.nil?
-      return true if experiments_enabled? && feature.experiment == true
+      return true if experiments_enabled? && feature.experiment?
       return @enabled_features.include?(key) || ENV[feature.env_var]
     end
 
-    def self.register_class_method(klass: nil, symbol: nil, default_symbol: nil, override_symbol: nil, key: nil)
-      return if klass.nil? || symbol.nil? || default_symbol.nil? || override_symbol.nil? || key.nil?
+    def self.register_class_method(klass: nil, symbol: nil, disabled_symbol: nil, enabled_symbol: nil, key: nil)
+      return if klass.nil? || symbol.nil? || disabled_symbol.nil? || enabled_symbol.nil? || key.nil?
       klass.define_singleton_method(symbol) do |*args|
         if enabled?(key)
-          klass.send(override_symbol, *args)
+          klass.send(enabled_symbol, *args)
         else
-          klass.send(default_symbol, *args)
+          klass.send(disabled_symbol, *args)
         end
       end
     end
 
-    def self.register_instance_method(klass: nil, symbol: nil, default_symbol: nil, override_symbol: nil, key: nil)
-      return if klass.nil? || symbol.nil? || default_symbol.nil? || override_symbol.nil? || key.nil?
+    def self.register_instance_method(klass: nil, symbol: nil, disabled_symbol: nil, enabled_symbol: nil, key: nil)
+      return if klass.nil? || symbol.nil? || disabled_symbol.nil? || enabled_symbol.nil? || key.nil?
       klass.send(:define_method, symbol.to_s) do |*args|
         if enabled?(key)
-          self.send(override_symbol, *args)
+          self.send(enabled_symbol, *args)
         else
-          self.send(default_symbol, *args)
+          self.send(disabled_symbol, *args)
         end
       end
     end
 
     def self.features
+      # collect flags from all gems/projects
       [
         Feature.new(key: :use_iTMS_transporter_shell_script,
             description: 'Use iTunes Transporter shell script',
