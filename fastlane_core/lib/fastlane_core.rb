@@ -4,6 +4,8 @@ require 'json'
 require 'fastlane_core/core_ext/string'
 
 require 'fastlane_core/version'
+require 'fastlane_core/feature/feature'
+require 'fastlane_core/features'
 require 'fastlane_core/helper'
 require 'fastlane_core/xcodebuild_list_output_parser'
 require 'fastlane_core/configuration/configuration'
@@ -23,8 +25,6 @@ require 'fastlane_core/project'
 require 'fastlane_core/device_manager'
 require 'fastlane_core/ui/ui'
 require 'fastlane_core/tool_collector'
-require 'fastlane_core/feature/feature_manager'
-require 'fastlane_core/feature/feature'
 
 # Third Party code
 require 'colored'
